@@ -1,5 +1,7 @@
 Rails.application.routes.draw do
 
+  resources :products, only: :show
+
   resources :companies, only: :show
 
   resource :dashboard, only: :show
