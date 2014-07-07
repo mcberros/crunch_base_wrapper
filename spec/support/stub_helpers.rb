@@ -9,6 +9,16 @@ module StubHelpers
     to_return(:status => 200, :body => company_keen_response)
 	end
 
+	def stub_one_product_page
+	  stub_request(:get, "http://api.crunchbase.com/v/2/products?order=created_at%20DESC&page=1&user_key=e314b958fbba5e68116283cf9f8cd96e").
+	    to_return(:status => 200, :body => organizations_only_one_product_page_response)
+	end
+
+	def stub_one_product
+	  stub_request(:get, "http://api.crunchbase.com/v/2/product/basecamp?user_key=e314b958fbba5e68116283cf9f8cd96e").
+	    to_return(:status => 200, :body => product_basecamp_response, :headers => {})
+	end
+
 	def stub_three_company_pages
 	  stub_request(:get, "http://api.crunchbase.com/v/2/organizations?order=created_at%20DESC&page=1&user_key=e314b958fbba5e68116283cf9f8cd96e").
 	    to_return(:status => 200, :body => organizations_three_company_pages_response)
@@ -19,6 +29,19 @@ module StubHelpers
 	  companies_data['data']['items'].each do |company|
 	    stub_request(:get, "http://api.crunchbase.com/v/2/#{company['path']}?user_key=e314b958fbba5e68116283cf9f8cd96e").
 	      to_return(:status => 200, :body => company_keen_response)
+	  end
+	end
+
+	def stub_three_product_pages
+	  stub_request(:get, "http://api.crunchbase.com/v/2/products?order=created_at%20DESC&page=1&user_key=e314b958fbba5e68116283cf9f8cd96e").
+	    to_return(:status => 200, :body => organizations_three_product_pages_response)
+	end
+
+	def stub_each_product_for_the_first_page
+	  products_data = JSON.parse(organizations_three_product_pages_response)
+	  products_data['data']['items'].each do |product|
+	    stub_request(:get, "http://api.crunchbase.com/v/2/#{product['path']}?user_key=e314b958fbba5e68116283cf9f8cd96e").
+	      to_return(:status => 200, :body => product_basecamp_response)
 	  end
 	end
 
@@ -37,6 +60,24 @@ module StubHelpers
 					  	}
 					  }
 			 	}
+	  JSON
+	end
+
+	def organizations_only_one_product_page_response
+	  <<-JSON
+	    {
+	     "data": {
+	          "items": [
+	               {
+	                "name": "Basecamp",
+	                "path": "product/basecamp"
+	               }
+	              ],
+	          "paging": {
+	              "total_items": 1
+	            }
+	          }
+	      }
 	  JSON
 	end
 
@@ -214,6 +255,186 @@ module StubHelpers
 	    }
 	}
 	JSON
+	end
+
+	def product_basecamp_response
+	  <<-JSON
+	  {
+	   "metadata": {
+	    "version": 2,
+	    "www_path_prefix": "http://www.crunchbase.com/",
+	    "api_path_prefix": "http://api.crunchbase.com/v/2/",
+	    "image_path_prefix": "http://images.crunchbase.com/"
+	   },
+	   "data": {
+	    "uuid": "9433b16a214b5ae20ed484f1aa0443ec",
+	    "type": "Product",
+	    "properties": {
+	     "lifecycle_stage": "live",
+	     "owner_id": "11b56c0216feeeee5cefcc19b2b7f44b",
+	     "short_description": "Basecamp is a project management and group collaboration tool. It was launched in 2004 as 37signals first product. The tool includes",
+	     "permalink": "basecamp",
+	     "name": "Basecamp",
+	     "description": "Basecamp is a project management and group collaboration tool. It was launched in 2004 as 37signals first product. The tool includes features for schedules, tasks, files, and messages. Basecamp is where the Ruby on Rails framework was derived from. Pricing starts at free for one active project and works itself up in tiers depending on how many active projects you want. Basecamp was redesigned in 2012; the remainder of this article needs to be updated as appropriate.",
+	     "homepage_url": "http://www.basecamphq.com",
+	     "created_at": 1185258112,
+	     "updated_at": 1397995407
+	    },
+	    "relationships": {
+	     "primary_image": {
+	      "paging": {
+	       "total_items": 1,
+	       "first_page_url": "http://api.crunchbase.com/v/2/product/basecamp/primary_image",
+	       "sort_order": "created_at DESC"
+	      },
+	      "items": [
+	       {
+	        "type": "ImageAsset",
+	        "title": null,
+	        "path": "image/upload/v1397239442/0d227cdaeed0babdcf0af83eaa06847c.png",
+	        "created_at": 1398019274,
+	        "updated_at": 1398019274
+	       }
+	      ]
+	     },
+	     "images": {
+	      "paging": {
+	       "total_items": 1,
+	       "first_page_url": "http://api.crunchbase.com/v/2/product/basecamp/images",
+	       "sort_order": "created_at DESC"
+	      },
+	      "items": [
+	       {
+	        "type": "ImageAsset",
+	        "title": null,
+	        "path": "image/upload/v1397239443/71bee12ceffb100f4449ec6669c8a1eb.png",
+	        "created_at": 1398019274,
+	        "updated_at": 1398019274
+	       }
+	      ]
+	     },
+	     "websites": {
+	      "paging": {
+	       "total_items": 4,
+	       "first_page_url": "http://api.crunchbase.com/v/2/product/basecamp/websites",
+	       "sort_order": "created_at DESC"
+	      },
+	      "items": [
+	       {
+	        "url": "http://www.twitter.com/37signals",
+	        "type": "WebPresence",
+	        "title": "twitter",
+	        "created_at": 1397877760,
+	        "updated_at": 2014
+	       },
+	       {
+	        "url": "http://www.twitter.com/37signals",
+	        "type": "WebPresence",
+	        "title": "twitter",
+	        "created_at": 1185258112,
+	        "updated_at": 1397995407
+	       },
+	       {
+	        "url": "http://productblog.37signals.com/",
+	        "type": "WebPresence",
+	        "title": "blog",
+	        "created_at": 1185258112,
+	        "updated_at": 1397995407
+	       },
+	       {
+	        "url": "http://www.basecamphq.com",
+	        "type": "WebPresence",
+	        "title": "homepage",
+	        "created_at": 1185258112,
+	        "updated_at": 1397995407
+	       }
+	      ]
+	     },
+	     "news": {
+	      "paging": {
+	       "total_items": 9,
+	       "first_page_url": "http://api.crunchbase.com/v/2/product/basecamp/news",
+	       "sort_order": "created_at DESC"
+	      },
+	      "items": [
+	       {
+	        "url": "http://techcrunch.com/2013/07/09/toms-planner-acquires-gantt-chart-service-competitor-gantto/",
+	        "author": "Stephanie Yang",
+	        "posted_on": "2013-07-09",
+	        "type": "PressReference",
+	        "title": "Tom's Planner Acquires Gantt Chart Service Competitor Gantto",
+	        "created_at": 1373415618,
+	        "updated_at": 2013
+	       },
+	       {
+	        "url": "http://techcrunch.com/2013/02/08/after-8-years-on-the-web-project-management-platform-basecamp-finally-launches-an-official-ios-app/",
+	        "author": "Rip Empson",
+	        "posted_on": "2013-02-08",
+	        "type": "PressReference",
+	        "title": "After 8 Years On The Web, Project Management Platform Basecamp Finally Launches An “Official” iOS App",
+	        "created_at": 1360386012,
+	        "updated_at": 2013
+	       },
+	       {
+	        "url": "http://techcrunch.com/2012/04/21/asana-stats/",
+	        "author": "Josh Constine",
+	        "posted_on": "2012-04-21",
+	        "type": "PressReference",
+	        "title": "Twitter and LinkedIn Manage Tasks With Asana, New API Means Robots Can Too",
+	        "created_at": 1335032951,
+	        "updated_at": 2012
+	       },
+	       {
+	        "url": "http://www.techcrunch.com/2009/06/22/liquidplanner-finds-1-million-for-project-management-software/",
+	        "author": "Leena Rao",
+	        "posted_on": "2009-06-22",
+	        "type": "PressReference",
+	        "title": "LiquidPlanner Finds $1 Million For Project Management Software",
+	        "created_at": 1245695994,
+	        "updated_at": 2009
+	       },
+	       {
+	        "url": "http://www.techcrunch.com/2009/02/16/clarizen-project-management-for-non-project-managers-free-1-yr-subscriptions/",
+	        "author": "Roi Carthy",
+	        "posted_on": "2009-02-16",
+	        "type": "PressReference",
+	        "title": "Clarizen: Project Management for Non-Project Managers (Free 1 yr. Subscriptions!)",
+	        "created_at": 1234804805,
+	        "updated_at": 2009
+	       },
+	       {
+	        "url": "http://www.techcrunch.com/2009/02/02/wiggio-comes-out-of-beta-with-a-yammer-for-college-students/",
+	        "author": "Erick Schonfeld",
+	        "posted_on": "2009-02-02",
+	        "type": "PressReference",
+	        "title": "Wiggio Comes Out Of Beta With A Yammer For College Students",
+	        "created_at": 1233601487,
+	        "updated_at": 2009
+	       },
+	       {
+	        "url": "http://www.techcrunch.com/2008/12/30/organize-your-company-with-wizehive-beta-invites/",
+	        "author": "Erick Schonfeld",
+	        "posted_on": "2008-12-30",
+	        "type": "PressReference",
+	        "title": "Organize Your Company With WizeHive (Beta Invites)",
+	        "created_at": 1230661630,
+	        "updated_at": 2009
+	       },
+	       {
+	        "url": "http://www.techcrunch.com/2005/12/13/new-stuff-at-basecamp/",
+	        "author": "Michael Arrington",
+	        "posted_on": "2005-12-13",
+	        "type": "PressReference",
+	        "title": "New Stuff at Basecamp",
+	        "created_at": 1220666504,
+	        "updated_at": 2008
+	       }
+	      ]
+	     }
+	    }
+	   }
+	  }
+	  JSON
 	end
 
 	def organizations_three_company_pages_response
@@ -451,6 +672,243 @@ module StubHelpers
 	    }
 	  JSON
 	end
+
+	def organizations_three_product_pages_response
+	  <<-JSON
+	    {
+	      "data": {
+	          "items": [
+	              {
+	                  "updated_at": 1397995342,
+	                  "name": "3C Plus - IP PBX",
+	                  "path": "product/3c-plus-ip-pbx",
+	                  "created_at": 1380013219,
+	                  "type": "Product"
+	              },
+	              {
+	                  "updated_at": 1397995342,
+	                  "name": "Cloud Call Center",
+	                  "path": "product/cloud-call-center",
+	                  "created_at": 1380013219,
+	                  "type": "Product"
+	              },
+	              {
+	                  "updated_at": 1397995342,
+	                  "name": "LightCMS",
+	                  "path": "product/lightcms",
+	                  "created_at": 1288045642,
+	                  "type": "Product"
+	              },
+	              {
+	                  "updated_at": 1397995342,
+	                  "name": "Radium3",
+	                  "path": "product/radium3",
+	                  "created_at": 1288048004,
+	                  "type": "Product"
+	              },
+	              {
+	                  "updated_at": 1397995342,
+	                  "name": "Valentines Cards",
+	                  "path": "product/valentines-cards",
+	                  "created_at": 1359488039,
+	                  "type": "Product"
+	              },
+	              {
+	                  "updated_at": 1397995342,
+	                  "name": "Five Dollar Shake Cards",
+	                  "path": "product/five-dollar-shake-cards",
+	                  "created_at": 1359488039,
+	                  "type": "Product"
+	              },
+	              {
+	                  "updated_at": 1397995342,
+	                  "name": "Birthday Cards Women",
+	                  "path": "product/birthday-cards-women",
+	                  "created_at": 1359488039,
+	                  "type": "Product"
+	              },
+	              {
+	                  "updated_at": 1397995342,
+	                  "name": "ItalianPod101.com",
+	                  "path": "product/italianpod101-com",
+	                  "created_at": 1328608750,
+	                  "type": "Product"
+	              },
+	              {
+	                  "updated_at": 1397995342,
+	                  "name": "GreekPod101.com",
+	                  "path": "product/greekpod101-com",
+	                  "created_at": 1328608750,
+	                  "type": "Product"
+	              },
+	              {
+	                  "updated_at": 1397995342,
+	                  "name": "PortuguesePod101.com",
+	                  "path": "product/portuguesepod101-com",
+	                  "created_at": 1328608750,
+	                  "type": "Product"
+	              },
+	              {
+	                  "updated_at": 1397995342,
+	                  "name": "DocMail API",
+	                  "path": "product/docmail-api",
+	                  "created_at": 1244081347,
+	                  "type": "Product"
+	              },
+	              {
+	                  "updated_at": 1397995342,
+	                  "name": "Gratitude Products",
+	                  "path": "product/gratitude-products",
+	                  "created_at": 1244070413,
+	                  "type": "Product"
+	              },
+	              {
+	                  "updated_at": 1397995342,
+	                  "name": "Token of Appreciation",
+	                  "path": "product/token-of-appreciation",
+	                  "created_at": 1244070413,
+	                  "type": "Product"
+	              },
+	              {
+	                  "updated_at": 1397995342,
+	                  "name": "Techinline Remote Desktop",
+	                  "path": "product/techinline-remote-desktop",
+	                  "created_at": 1244063596,
+	                  "type": "Product"
+	              },
+	              {
+	                  "updated_at": 1397995342,
+	                  "name": "Kynetx AppBuilder",
+	                  "path": "product/intersekt",
+	                  "created_at": 1227054391,
+	                  "type": "Product"
+	              },
+	              {
+	                  "updated_at": 1397995342,
+	                  "name": "BETA PRO 50",
+	                  "path": "product/beta-pro-50",
+	                  "created_at": 1227032778,
+	                  "type": "Product"
+	              },
+	              {
+	                  "updated_at": 1397995342,
+	                  "name": "Nectar Personal Websites",
+	                  "path": "product/nectar-personal-websites",
+	                  "created_at": 1227050454,
+	                  "type": "Product"
+	              },
+	              {
+	                  "updated_at": 1397995342,
+	                  "name": "Encentivizer Platform",
+	                  "path": "product/encentivizer-platform",
+	                  "created_at": 1397701985,
+	                  "type": "Product"
+	              },
+	              {
+	                  "updated_at": 1397995342,
+	                  "name": "Wikison Wetpaint",
+	                  "path": "product/wetpaint-wiki",
+	                  "created_at": 1180145922,
+	                  "type": "Product"
+	              },
+	              {
+	                  "updated_at": 1397995343,
+	                  "name": "3C Plus - IVR",
+	                  "path": "product/3cplus-ivr",
+	                  "created_at": 1380013220,
+	                  "type": "Product"
+	              },
+	              {
+	                  "updated_at": 1397995343,
+	                  "name": "Inbound and Outbound VOIP",
+	                  "path": "product/inbound-and-outbound-voip",
+	                  "created_at": 1380013220,
+	                  "type": "Product"
+	              },
+	              {
+	                  "updated_at": 1397995343,
+	                  "name": "Voice Messages",
+	                  "path": "product/voice-messages",
+	                  "created_at": 1380013220,
+	                  "type": "Product"
+	              },
+	              {
+	                  "updated_at": 1397995343,
+	                  "name": "Rankmeme",
+	                  "path": "product/rankmeme",
+	                  "created_at": 1288061626,
+	                  "type": "Product"
+	              },
+	              {
+	                  "updated_at": 1397995343,
+	                  "name": "MO-Call",
+	                  "path": "product/mo-call",
+	                  "created_at": 1288097601,
+	                  "type": "Product"
+	              },
+	              {
+	                  "updated_at": 1397995343,
+	                  "name": "custom shoot CG photography",
+	                  "path": "product/custom-shoot-cg-photography",
+	                  "created_at": 1288136209,
+	                  "type": "Product"
+	              },
+	              {
+	                  "updated_at": 1397995343,
+	                  "name": "TVUPack",
+	                  "path": "product/tvupack",
+	                  "created_at": 1288130087,
+	                  "type": "Product"
+	              },
+	              {
+	                  "updated_at": 1397995343,
+	                  "name": "GPU.NET",
+	                  "path": "product/gpu-net",
+	                  "created_at": 1288146869,
+	                  "type": "Product"
+	              },
+	              {
+	                  "updated_at": 1397995343,
+	                  "name": "Birthday Cards Men",
+	                  "path": "product/birthday-cards-men",
+	                  "created_at": 1359488039,
+	                  "type": "Product"
+	              },
+	              {
+	                  "updated_at": 1397995343,
+	                  "name": "Wedding Cards",
+	                  "path": "product/wedding-cards",
+	                  "created_at": 1359488039,
+	                  "type": "Product"
+	              },
+	              {
+	                  "updated_at": 1397995343,
+	                  "name": "Mother's Day Cards",
+	                  "path": "product/mothers-day-cards",
+	                  "created_at": 1359488040,
+	                  "type": "Product"
+	              }
+	          ],
+	          "paging": {
+	              "next_page_url": "http://api.crunchbase.com/v/2/products?page=2",
+	              "total_items": 30,
+	              "number_of_pages": 1,
+	              "sort_order": "updated_at ASC",
+	              "items_per_page": 1000,
+	              "prev_page_url": null,
+	              "current_page": 1
+	          }
+	      },
+	      "metadata": {
+	          "image_path_prefix": "http://images.crunchbase.com/",
+	          "www_path_prefix": "http://www.crunchbase.com/",
+	          "api_path_prefix": "http://api.crunchbase.com/v/2/",
+	          "version": 2
+	      }
+	  }
+	  JSON
+	end
+
 end
 
 RSpec.configure do |c|
