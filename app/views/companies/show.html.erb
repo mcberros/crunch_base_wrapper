@@ -1,0 +1,21 @@
+<% if @company.has_image? %>
+	<%= image_tag(@company.image) %>
+<% end %>
+<p>Name: <%= @company.name %></p>
+<p>Description: <%= @company.description %></p>
+<% if @company.has_foundation_date? %>
+	<p>Foundation date: <%= @company.founded %></p>
+<% end %>
+<p>Crunch Base URL: <%= @company.crunch_url %></p>
+
+<% if @company.has_people? %>
+	<h2>Team</h2>
+	<% @company.people.each do |person| %>
+		<p>Title: <%= "#{person.title}"%></p>
+		<p>First Name: <%= "#{person.first_name}"%></p>
+		<p>Last Name: <%= "#{person.last_name}"%></p>
+		<p>Crunch base URL: <%= link_to "#{person.crunch_url}", "#{person.crunch_url}" %></p>
+	<% end %>
+<% end %>
+
+<%= link_to "Back", dashboard_path %>
