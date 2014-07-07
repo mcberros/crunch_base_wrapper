@@ -1,0 +1,21 @@
+<h2>Companies</h2>
+
+<h2>List of companies</h2>
+<% @companies.each do |company| %>
+  <% if company.has_image? %>
+  	<%= image_tag(company.image, height: '58', width: '58') %>
+  <% end %>
+  <p>Name: <%= company.name %></p>
+  <p>Description: <%= company.description %></p>
+<% end %>
+
+<nav>
+	<ul>
+		<% if @page_companies > 1 %>
+			<li><%= link_to "Prev", dashboard_path(page_companies: @page_companies-1) %></li>
+		<% end %>
+		<% if @page_companies < @max_company_pages %>
+			<li><%= link_to "Next", dashboard_path(page_companies: @page_companies+1) %></li>
+		<% end %>
+	</ul>
+</nav>
