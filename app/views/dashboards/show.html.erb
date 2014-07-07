@@ -20,10 +20,40 @@
 <nav>
 	<ul>
 		<% if @page_companies > 1 %>
-			<li><%= link_to "Prev", dashboard_path(page_companies: @page_companies-1) %></li>
+			<li><%= link_to "Prev", dashboard_path(page_products: @page_products, page_companies: @page_companies-1) %></li>
 		<% end %>
 		<% if @page_companies < @max_company_pages %>
-			<li><%= link_to "Next", dashboard_path(page_companies: @page_companies+1) %></li>
+			<li><%= link_to "Next", dashboard_path(page_products: @page_products, page_companies: @page_companies+1) %></li>
+		<% end %>
+	</ul>
+</nav>
+
+<h1>Products</h1>
+
+<h2>Search products</h2>
+
+<%= form_tag(product_path(:product_permalink), method: "get") do %>
+	<%= label_tag('Permalink') %>
+	<%= text_field_tag(:product_permalink) %>
+	<%= submit_tag("Search product")%>
+<% end %>
+
+<h2>List of products</h2>
+<% @products.each do |product| %>
+  <% if product.has_image? %>
+  	<%= image_tag(product.image, height: '58', width: '58') %>
+  <% end %>
+  <p>Name: <%= product.name %></p>
+  <p>Description: <%= product.description %></p>
+<% end %>
+
+<nav>
+	<ul>
+		<% if @page_products > 1 %>
+			<li><%= link_to "Prev", dashboard_path(page_companies: @page_companies, page_products: @page_products-1) %></li>
+		<% end %>
+		<% if @page_products < @max_product_pages %>
+			<li><%= link_to "Next", dashboard_path(page_companies: @page_companies, page_products: @page_products+1) %></li>
 		<% end %>
 	</ul>
 </nav>
