@@ -3,7 +3,12 @@ require 'spec_helper'
 describe 'company search' do
 	it 'shows one company' do
 		stub_one_company_page
+
 		stub_one_company
+
+		stub_one_product_page
+
+		stub_one_product
 
 		visit '/dashboard'
 
