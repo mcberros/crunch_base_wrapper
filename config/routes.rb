@@ -1,4 +1,8 @@
 Rails.application.routes.draw do
+
+  resource :dashboard, only: :show
+
+  root 'dashboards#show'
   # The priority is based upon order of creation: first created -> highest priority.
   # See how all your routes lay out with "rake routes".
 
