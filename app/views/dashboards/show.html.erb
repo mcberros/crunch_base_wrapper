@@ -1,4 +1,12 @@
-<h2>Companies</h2>
+<h1>Companies</h1>
+
+<h2>Search companies</h2>
+
+<%= form_tag(company_path(:company_permalink), method: "get") do %>
+	<%= label_tag('Permalink') %>
+	<%= text_field_tag(:company_permalink) %>
+	<%= submit_tag("Search_company")%>
+<% end %>
 
 <h2>List of companies</h2>
 <% @companies.each do |company| %>
