@@ -1,0 +1,21 @@
+<% if @product.has_image? %>
+	<%= image_tag(@product.image) %>
+<% end %>
+<p>Name: <%= @product.name %></p>
+<p>Description: <%= @product.description %></p>
+<% if @product.has_launch_date? %>
+	<p>Launch date: <%= @product.launch_date %></p>
+<% end %>
+<p>Crunch Base URL: <%= @product.crunch_url %></p>
+
+<% if @product.has_articles? %>
+	<h2>Articles</h2>
+	<% @product.articles.each do |article| %>
+		<p>Title: <%= "#{article.title}"%></p>
+		<p>Author: <%= "#{article.author}"%></p>
+		<p>Posted on: <%= "#{article.posted_on}"%></p>
+		<p>Article URL: <%= link_to "#{article.article_url}", "#{article.article_url}" %></p>
+	<% end %>
+<% end %>
+
+<%= link_to "Back", dashboard_path %>
