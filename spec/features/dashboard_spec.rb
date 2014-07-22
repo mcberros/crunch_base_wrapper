@@ -23,6 +23,22 @@ describe 'dashboard' do
 		end
 	end
 
+	context 'with only one page of companies and product. The only company does not have board members' do
+		it 'shows company' do
+			stub_one_company_page_without_board
+
+			stub_one_company_without_board
+
+			stub_one_product_page
+
+			stub_one_product
+
+			visit '/dashboard'
+
+			expect(page).to have_content("Home Inventory S[pecialists")
+		end
+	end
+
 	context 'with three pages of companies' do
 
 		before(:each) do

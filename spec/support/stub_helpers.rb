@@ -9,6 +9,16 @@ module StubHelpers
     to_return(:status => 200, :body => company_keen_response)
 	end
 
+	def stub_one_company_page_without_board
+	  stub_request(:get, "http://api.crunchbase.com/v/2/organizations?order=created_at%20DESC&page=1&user_key=e314b958fbba5e68116283cf9f8cd96e").
+	    to_return(:status => 200, :body => organizations_only_one_company_page_with_company_without_board_response)
+	end
+
+	def stub_one_company_without_board
+  stub_request(:get, "http://api.crunchbase.com/v/2/organization/home-inventory-s-pecialists-llc?user_key=e314b958fbba5e68116283cf9f8cd96e").
+    to_return(:status => 200, :body => company_without_board)
+	end
+
 	def stub_one_product_page
 	  stub_request(:get, "http://api.crunchbase.com/v/2/products?order=created_at%20DESC&page=1&user_key=e314b958fbba5e68116283cf9f8cd96e").
 	    to_return(:status => 200, :body => organizations_only_one_product_page_response)
@@ -79,6 +89,141 @@ module StubHelpers
 	          }
 	      }
 	  JSON
+	end
+
+	def organizations_only_one_company_page_with_company_without_board_response
+	  <<-JSON
+	    {
+			 "data": {
+					  "items": [
+							   {
+							    "name": "home-inventory-s-pecialists-llc",
+							    "path": "organization/home-inventory-s-pecialists-llc"
+							   }
+							  ],
+					  "paging": {
+					   		"total_items": 1
+					  	}
+					  }
+			 	}
+	  JSON
+	end
+
+	def company_without_board
+		<<-JSON
+		{
+		    "metadata": {
+		        "version": 2,
+		        "www_path_prefix": "http://www.crunchbase.com/",
+		        "api_path_prefix": "http://api.crunchbase.com/v/2/",
+		        "image_path_prefix": "http://images.crunchbase.com/"
+		    },
+		    "data": {
+		        "uuid": "4667033762fa3c0d9dd88c6687dd8c8a",
+		        "type": "Organization",
+		        "properties": {
+		            "role_company": true,
+		            "description": "To help our clients keep a peace of mind when or if a disaster happens to them. Providing a proof of ownership will enable their insurance claims when amde to be settled within a timely manor.",
+		            "short_description": "To help our clients keep a peace of mind when or if a disaster happens to them.",
+		            "founded_on_day": 7,
+		            "founded_on_month": 12,
+		            "founded_on_year": 2008,
+		            "founded_on": "2008-12-07",
+		            "founded_on_trust_code": 7,
+		            "permalink": "home-inventory-s-pecialists-llc",
+		            "primary_role": "company",
+		            "is_closed": false,
+		            "closed_on_trust_code": 0,
+		            "name": "Home Inventory S[pecialists",
+		            "closed_on_day": null,
+		            "closed_on_month": null,
+		            "closed_on_year": null,
+		            "closed_on": null,
+		            "created_at": 1405633587,
+		            "updated_at": 1405669157,
+		            "total_funding_usd": 0,
+		            "number_of_investments": 0,
+		            "number_of_employees": 4
+		        },
+		        "relationships": {
+		            "current_team": {
+		                "paging": {
+		                    "total_items": 1,
+		                    "first_page_url": "http://api.crunchbase.com/v/2/organization/home-inventory-s-pecialists-llc/current_team",
+		                    "sort_order": "custom"
+		                },
+		                "items": [
+		                    {
+		                        "first_name": "Carl",
+		                        "last_name": "Carick",
+		                        "title": "General, Business Development",
+		                        "started_on": null,
+		                        "path": "person/carl-carick",
+		                        "created_at": 1405849619,
+		                        "updated_at": 1405849619
+		                    }
+		                ]
+		            },
+		            "offices": {
+		                "paging": {
+		                    "total_items": 1,
+		                    "first_page_url": "http://api.crunchbase.com/v/2/organization/home-inventory-s-pecialists-llc/offices",
+		                    "sort_order": "created_at DESC"
+		                },
+		                "items": [
+		                    {
+		                        "name": "Headquarters",
+		                        "street_1": null,
+		                        "street_2": null,
+		                        "city": "Boonville",
+		                        "region": null,
+		                        "country_code": null,
+		                        "type": "Address",
+		                        "created_at": 1405633670,
+		                        "updated_at": 1405633670
+		                    }
+		                ]
+		            },
+		            "headquarters": {
+		                "paging": {
+		                    "total_items": 1,
+		                    "first_page_url": "http://api.crunchbase.com/v/2/organization/home-inventory-s-pecialists-llc/headquarters",
+		                    "sort_order": "created_at DESC"
+		                },
+		                "items": [
+		                    {
+		                        "name": "Headquarters",
+		                        "street_1": null,
+		                        "street_2": null,
+		                        "city": "Boonville",
+		                        "region": null,
+		                        "country_code": null,
+		                        "type": "Address",
+		                        "created_at": 1405633670,
+		                        "updated_at": 1405633670
+		                    }
+		                ]
+		            },
+		            "funding_rounds": {
+		                "paging": {
+		                    "total_items": 1,
+		                    "first_page_url": "http://api.crunchbase.com/v/2/organization/home-inventory-s-pecialists-llc/funding_rounds",
+		                    "sort_order": "created_at DESC"
+		                },
+		                "items": [
+		                    {
+		                        "type": "FundingRound",
+		                        "name": "Home Inventory S[pecialists Funding Round",
+		                        "path": "funding-round/476ac0e1c4c17761cba54d8161b90847",
+		                        "created_at": 1405669157,
+		                        "updated_at": 1405669157
+		                    }
+		                ]
+		            }
+		        }
+		    }
+		}
+		JSON
 	end
 
 	def company_keen_response
