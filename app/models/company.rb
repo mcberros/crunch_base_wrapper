@@ -29,7 +29,7 @@ class Company
 		end
 	end
 
-	def self.get_max_pages()
+	def self.get_max_pages
 		crunch_companies = @@crunch_access.get_companies
 		total_companies = crunch_companies['data']['paging']['total_items']
 		max_pages = (total_companies/COMPANIES_PER_PAGE.to_f).ceil
