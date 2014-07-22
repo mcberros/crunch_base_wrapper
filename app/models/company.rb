@@ -94,8 +94,10 @@ class Company
 		def get_people
 			board = []
 			team = []
-			if has_people_on_team?('board_members_and_advisors') || has_people_on_team?('current_team')
+			if has_people_on_team?('board_members_and_advisors')
 				board = get_people_from_team('board_members_and_advisors')
+			end
+			if has_people_on_team?('current_team')
 				team = get_people_from_team('current_team')
 			end
 			board.concat(team)
