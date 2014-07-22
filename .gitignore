@@ -16,3 +16,4 @@
 /tmp
 
 .DS_Store
+config/crunch_base_config.yml
