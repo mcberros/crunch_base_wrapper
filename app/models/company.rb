@@ -7,10 +7,10 @@ class Company
 	def initialize(company_data)
 		@crunch_hostname = company_data['metadata']['www_path_prefix']
 		@name = company_data['data']['properties']['name']
-		@description = has_short_description?(company_data) ? get_short_description(company_data) : ''
-		@image = has_primary_image?(company_data) ? get_image_url(company_data) : ''
+		@description = get_short_description(company_data)
+		@image = get_image_url(company_data)
 		@crunch_url = "#{@crunch_hostname}organization/#{company_data['data']['properties']['permalink']}"
-		@founded = has_founded?(company_data) ? get_foundation_date(company_data) : ''
+		@founded = get_foundation_date(company_data)
 		@people = (has_board?(company_data) || has_current_team?(company_data)) ? get_people(company_data) : nil
 	end
 
@@ -55,17 +55,33 @@ class Company
 
 	  @@crunch_access = CrunchAccessService.new
 
-		def has_short_description?(company_data)
-			!company_data['data']['properties']['short_description'].nil? &&
-			 !company_data['data']['properties']['short_description'].empty?
-		end
-
 		def get_short_description(company_data)
-			company_data['data']['properties']['short_description']
+			result = ''
+			unless company_data['data']['properties']['short_description'].nil?
+				result = company_data['data']['properties']['short_description']
+			end
+			result
 		end
 
 		def has_relationships?(company_data)
 			!company_data['data']['relationships'].empty?
+		end
+
+		def get_image_url(company_data)
+			result = ''
+			if has_relationships?(company_data) &&
+			 !company_data['data']['relationships']['primary_image'].nil?
+				result = "#{company_data['metadata']['image_path_prefix']}/#{company_data['data']['relationships']['primary_image']['items'][0]['path']}"
+			end
+			result
+		end
+
+		def get_foundation_date(company_data)
+			result = ''
+			if !company_data['data']['properties']['founded_on'].nil?
+				result = company_data['data']['properties']['founded_on']
+			end
+			result
 		end
 
 		def has_board?(company_data)
@@ -96,23 +112,5 @@ class Company
 				end
 			end
 			board.concat(team)
-		end
-
-		def has_primary_image?(company_data)
-			has_relationships?(company_data) &&
-			 !company_data['data']['relationships']['primary_image'].nil?
-		end
-
-		def get_image_url(company_data)
-			"#{company_data['metadata']['image_path_prefix']}/#{company_data['data']['relationships']['primary_image']['items'][0]['path']}"
-		end
-
-		def has_founded?(company_data)
-			!company_data['data']['properties']['founded_on'].nil? &&
-			 !company_data['data']['properties']['founded_on'].empty?
-		end
-
-		def get_foundation_date(company_data)
-			company_data['data']['properties']['founded_on']
 		end
 end
