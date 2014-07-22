@@ -88,8 +88,7 @@ class Company
 		def has_people_on_team?(team)
 			has_relationships? &&
 	  	 !@company_data['data']['relationships'][team].nil? &&
-	  	 !@company_data['data']['relationships'][team]['paging']['total_items'].nil? &&
-	  	  @company_data['data']['relationships'][team]['paging']['total_items'] > 0
+	  	 !@company_data['data']['relationships'][team]['paging']['total_items'].nil?
 		end
 
 		def get_people
