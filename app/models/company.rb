@@ -5,13 +5,14 @@ class Company
 	attr_accessor :name, :description, :image, :crunch_url, :founded, :people
 
 	def initialize(company_data)
-		@crunch_hostname = company_data['metadata']['www_path_prefix']
-		@name = company_data['data']['properties']['name']
-		@description = get_short_description(company_data)
-		@image = get_image_url(company_data)
-		@crunch_url = "#{@crunch_hostname}organization/#{company_data['data']['properties']['permalink']}"
-		@founded = get_foundation_date(company_data)
-		@people = (has_board?(company_data) || has_current_team?(company_data)) ? get_people(company_data) : nil
+		@company_data = company_data
+		@crunch_hostname = @company_data['metadata']['www_path_prefix']
+		@name = @company_data['data']['properties']['name']
+		@description = get_short_description
+		@image = get_image_url
+		@crunch_url = "#{@crunch_hostname}organization/#{@company_data['data']['properties']['permalink']}"
+		@founded = get_foundation_date
+		@people = (has_board? || has_current_team?) ? get_people : nil
 	end
 
 	def self.page(model_page)
@@ -55,59 +56,59 @@ class Company
 
 	  @@crunch_access = CrunchAccessService.new
 
-		def get_short_description(company_data)
+		def get_short_description
 			result = ''
-			unless company_data['data']['properties']['short_description'].nil?
-				result = company_data['data']['properties']['short_description']
+			unless @company_data['data']['properties']['short_description'].nil?
+				result = @company_data['data']['properties']['short_description']
 			end
 			result
 		end
 
-		def has_relationships?(company_data)
-			!company_data['data']['relationships'].empty?
+		def has_relationships?
+			!@company_data['data']['relationships'].empty?
 		end
 
-		def get_image_url(company_data)
+		def get_image_url
 			result = ''
-			if has_relationships?(company_data) &&
-			 !company_data['data']['relationships']['primary_image'].nil?
-				result = "#{company_data['metadata']['image_path_prefix']}/#{company_data['data']['relationships']['primary_image']['items'][0]['path']}"
+			if has_relationships? &&
+			 !@company_data['data']['relationships']['primary_image'].nil?
+				result = "#{@company_data['metadata']['image_path_prefix']}/#{@company_data['data']['relationships']['primary_image']['items'][0]['path']}"
 			end
 			result
 		end
 
-		def get_foundation_date(company_data)
+		def get_foundation_date
 			result = ''
-			if !company_data['data']['properties']['founded_on'].nil?
-				result = company_data['data']['properties']['founded_on']
+			if !@company_data['data']['properties']['founded_on'].nil?
+				result = @company_data['data']['properties']['founded_on']
 			end
 			result
 		end
 
-		def has_board?(company_data)
-	  	has_relationships?(company_data) &&
-	  	 !company_data['data']['relationships']['board_members_and_advisors'].nil? &&
-	  	 !company_data['data']['relationships']['board_members_and_advisors']['paging']['total_items'].nil? &&
-	  	  company_data['data']['relationships']['board_members_and_advisors']['paging']['total_items'] > 0
+		def has_board?
+	  	has_relationships? &&
+	  	 !@company_data['data']['relationships']['board_members_and_advisors'].nil? &&
+	  	 !@company_data['data']['relationships']['board_members_and_advisors']['paging']['total_items'].nil? &&
+	  	  @company_data['data']['relationships']['board_members_and_advisors']['paging']['total_items'] > 0
 	  end
 
-		def has_current_team?(company_data)
-	  	has_relationships?(company_data) &&
-	  	 !company_data['data']['relationships']['current_team'].nil? &&
-	  	 !company_data['data']['relationships']['current_team']['paging']['total_items'].nil? &&
-	  	  company_data['data']['relationships']['current_team']['paging']['total_items'] > 0
+		def has_current_team?
+	  	has_relationships? &&
+	  	 !@company_data['data']['relationships']['current_team'].nil? &&
+	  	 !@company_data['data']['relationships']['current_team']['paging']['total_items'].nil? &&
+	  	  @company_data['data']['relationships']['current_team']['paging']['total_items'] > 0
 	  end
 
-		def get_people(company_data)
+		def get_people
 			board = []
 			team = []
-			if has_board?(company_data)
-				board = company_data['data']['relationships']['board_members_and_advisors']['items'].map do |board_member|
+			if has_board?
+				board = @company_data['data']['relationships']['board_members_and_advisors']['items'].map do |board_member|
 					Person.new(@crunch_hostname, board_member)
 				end
 			end
-			if has_current_team?(company_data)
-				team = company_data['data']['relationships']['current_team']['items'].map do |team_member|
+			if has_current_team?
+				team = @company_data['data']['relationships']['current_team']['items'].map do |team_member|
 					Person.new(@crunch_hostname, team_member)
 				end
 			end
