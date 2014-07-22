@@ -12,7 +12,7 @@ class Company
 		@image = get_image_url
 		@crunch_url = "#{@crunch_hostname}organization/#{@company_data['data']['properties']['permalink']}"
 		@founded = get_foundation_date
-		@people = (has_board? || has_current_team?) ? get_people : nil
+		@people = get_people
 	end
 
 	def self.page(model_page)
@@ -49,7 +49,7 @@ class Company
 	end
 
 	def has_people?
-		!@people.nil?
+		!@people.empty?
 	end
 
 	private
@@ -85,33 +85,26 @@ class Company
 			result
 		end
 
-		def has_board?
-	  	has_relationships? &&
-	  	 !@company_data['data']['relationships']['board_members_and_advisors'].nil? &&
-	  	 !@company_data['data']['relationships']['board_members_and_advisors']['paging']['total_items'].nil? &&
-	  	  @company_data['data']['relationships']['board_members_and_advisors']['paging']['total_items'] > 0
-	  end
-
-		def has_current_team?
-	  	has_relationships? &&
-	  	 !@company_data['data']['relationships']['current_team'].nil? &&
-	  	 !@company_data['data']['relationships']['current_team']['paging']['total_items'].nil? &&
-	  	  @company_data['data']['relationships']['current_team']['paging']['total_items'] > 0
-	  end
+		def has_people_on_team?(team)
+			has_relationships? &&
+	  	 !@company_data['data']['relationships'][team].nil? &&
+	  	 !@company_data['data']['relationships'][team]['paging']['total_items'].nil? &&
+	  	  @company_data['data']['relationships'][team]['paging']['total_items'] > 0
+		end
 
 		def get_people
 			board = []
 			team = []
-			if has_board?
-				board = @company_data['data']['relationships']['board_members_and_advisors']['items'].map do |board_member|
-					Person.new(@crunch_hostname, board_member)
-				end
-			end
-			if has_current_team?
-				team = @company_data['data']['relationships']['current_team']['items'].map do |team_member|
-					Person.new(@crunch_hostname, team_member)
-				end
+			if has_people_on_team?('board_members_and_advisors') || has_people_on_team?('current_team')
+				board = get_people_from_team('board_members_and_advisors')
+				team = get_people_from_team('current_team')
 			end
 			board.concat(team)
+		end
+
+		def get_people_from_team(team)
+			@company_data['data']['relationships'][team]['items'].map do |person|
+				Person.new(@crunch_hostname, person)
+			end
 		end
 end
