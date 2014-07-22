@@ -15,30 +15,27 @@ class Company
 	end
 
 	def self.page(model_page)
-		crunch_access = CrunchAccessService.new
 		model_page = model_page.to_i
 
 		service_page = ((COMPANIES_PER_PAGE * (model_page - 1)) / 1000 ) + 1
-		crunch_companies = crunch_access.get_companies(service_page)
+		crunch_companies = @@crunch_access.get_companies(service_page)
 
 		offset = (COMPANIES_PER_PAGE * (model_page -1 )) % 1000
 		crunch_companies['data']['items'].slice(offset, COMPANIES_PER_PAGE).map do |crunch_company|
 			permalink = crunch_company['path'].sub(/organization\//,'')
-			company = crunch_access.get_company(permalink)
+			company = @@crunch_access.get_company(permalink)
 			Company.new(company)
 		end
 	end
 
 	def self.get_max_pages()
-		crunch_access = CrunchAccessService.new
-		crunch_companies = crunch_access.get_companies
+		crunch_companies = @@crunch_access.get_companies
 		total_companies = crunch_companies['data']['paging']['total_items']
 		max_pages = (total_companies/COMPANIES_PER_PAGE.to_f).ceil
 	end
 
 	def self.get_company(permalink)
-		crunch_access = CrunchAccessService.new
-		company = crunch_access.get_company(permalink)
+		company = @@crunch_access.get_company(permalink)
 		Company.new(company)
 	end
 
@@ -55,6 +52,9 @@ class Company
 	end
 
 	private
+
+	  @@crunch_access = CrunchAccessService.new
+
 		def has_short_description?(company_data)
 			!company_data['data']['properties']['short_description'].nil? &&
 			 !company_data['data']['properties']['short_description'].empty?
