@@ -9,7 +9,8 @@ class Product
 		@name = product_data['data']['properties']['name']
 		@description = has_short_description?(product_data) ? get_short_description(product_data) : ''
 		@image = has_primary_image?(product_data) ? get_image_url(product_data) : ''
-		@crunch_url = "#{@crunch_hostname}product/#{product_data['data']['properties']['permalink']}"
+		permalink = "#{product_data['data']['properties']['permalink']}"
+		@crunch_url = "#{@crunch_hostname}product/#{permalink}"
 		@launch_date = has_launched?(product_data) ? get_launch_date(product_data) : ''
 		@articles = (has_articles_data?(product_data)) ? get_five_first_articles(product_data) : nil
 	end
@@ -22,11 +23,12 @@ class Product
 		crunch_products = crunch_access.get_products(service_page)
 
 		offset = (PRODUCTS_PER_PAGE * (model_page -1 )) % 1000
-		crunch_products['data']['items'].slice(offset, PRODUCTS_PER_PAGE).map do |crunch_product|
-			permalink = crunch_product['path'].sub(/product\//,'')
-			product = crunch_access.get_product(permalink)
-			Product.new(product)
-		end
+		crunch_products['data']['items'].slice(offset, PRODUCTS_PER_PAGE)
+			.map do |crunch_product|
+				permalink = crunch_product['path'].sub(/product\//,'')
+				product = crunch_access.get_product(permalink)
+				Product.new(product)
+			end
 	end
 
 	def self.get_max_pages()
@@ -74,7 +76,8 @@ class Product
 		end
 
 		def get_image_url(product_data)
-			"#{product_data['metadata']['image_path_prefix']}/#{product_data['data']['relationships']['primary_image']['items'][0]['path']}"
+			image_path = "#{product_data['data']['relationships']['primary_image']['items'][0]['path']}"
+			"#{product_data['metadata']['image_path_prefix']}/#{image_path}"
 		end
 
 		def has_launched?(product_data)

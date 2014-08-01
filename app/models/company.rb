@@ -10,7 +10,8 @@ class Company
 		@name = @company_data['data']['properties']['name']
 		@description = get_short_description
 		@image = get_image_url
-		@crunch_url = "#{@crunch_hostname}organization/#{@company_data['data']['properties']['permalink']}"
+		permalink = "#{@company_data['data']['properties']['permalink']}"
+		@crunch_url = "#{@crunch_hostname}organization/#{permalink}"
 		@founded = get_foundation_date
 		@people = get_people
 	end
@@ -22,11 +23,12 @@ class Company
 		crunch_companies = @@crunch_access.get_companies(service_page)
 
 		offset = (COMPANIES_PER_PAGE * (model_page -1 )) % 1000
-		crunch_companies['data']['items'].slice(offset, COMPANIES_PER_PAGE).map do |crunch_company|
-			permalink = crunch_company['path'].sub(/organization\//,'')
-			company = @@crunch_access.get_company(permalink)
-			Company.new(company)
-		end
+		crunch_companies['data']['items'].slice(offset, COMPANIES_PER_PAGE)
+			.map do |crunch_company|
+				permalink = crunch_company['path'].sub(/organization\//,'')
+				company = @@crunch_access.get_company(permalink)
+				Company.new(company)
+			end
 	end
 
 	def self.get_max_pages
@@ -72,7 +74,9 @@ class Company
 			result = ''
 			if has_relationships? &&
 			 !@company_data['data']['relationships']['primary_image'].nil?
-				result = "#{@company_data['metadata']['image_path_prefix']}/#{@company_data['data']['relationships']['primary_image']['items'][0]['path']}"
+			  images_host_name = "#{@company_data['metadata']['image_path_prefix']}/"
+				path_image = "#{@company_data['data']['relationships']['primary_image']['items'][0]['path']}"
+				result = "#{images_host_name}#{path_image}"
 			end
 			result
 		end
