@@ -45,3 +45,12 @@ group :test do
   gem 'minitest'
 end
 
+group :development do
+  gem 'flay'
+	gem 'excellent'
+	gem 'rubocop'
+	gem 'brakeman'
+	gem 'rails_best_practices'
+	gem 'yard'
+end
+
