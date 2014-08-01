@@ -1,7 +1,7 @@
 class DashboardsController < ApplicationController
 	def show
 		@max_company_pages = Company.get_max_pages
-		unless params[:page_companies]
+		if !params[:page_companies]
 			@page_companies =1
 			@companies = Company.page(@page_companies)
 		else
@@ -10,7 +10,7 @@ class DashboardsController < ApplicationController
 		end
 
 		@max_product_pages = Product.get_max_pages
-		unless params[:page_products]
+		if !params[:page_products]
 			@page_products =1
 			@products = Product.page(@page_products)
 		else
